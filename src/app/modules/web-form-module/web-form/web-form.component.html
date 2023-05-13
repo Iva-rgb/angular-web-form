@@ -1,0 +1,54 @@
+<form id="web-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div *ngFor="let field of fields">
+    <div class="field" *ngIf="!isFieldHidden(field)">
+      <label
+        [for]="field.field"
+        [ngClass]="field.type === 'text' ? 'text-input' : 'checkbox-input'"
+        >{{ field.label }}</label
+      >
+      <input
+        *ngIf="field.type === 'text'"
+        [id]="field.field"
+        [formControlName]="field.field"
+        type="text"
+      />
+      <input
+        *ngIf="field.type === 'check'"
+        [id]="field.field"
+        [formControlName]="field.field"
+        type="checkbox"
+      />
+      <div
+        *ngIf="
+          field.field === 'email' &&
+            email !== null &&
+            ((email.invalid && email.touched) || email.dirty);
+          else noneEmailField
+        "
+        class="alert"
+      >
+        <small *ngIf="email.errors?.['required']"
+          >The email field is required</small
+        >
+        <small *ngIf="email.errors?.['pattern']"
+          >Please provide a valid email address</small
+        >
+      </div>
+      <ng-template #noneEmailField>
+        <div
+          *ngIf="
+            form.controls[field.field].invalid &&
+            (form.controls[field.field].dirty ||
+              form.controls[field.field].touched)
+          "
+          class="alert"
+        >
+          <small *ngIf="form.controls[field.field].invalid"
+            >The {{field.field}} field is required</small
+          >
+        </div>
+      </ng-template>
+    </div>
+  </div>
+  <button class="submit-btn" type="submit">Submit</button>
+</form>
